@@ -1,12 +1,11 @@
-var board = document.getElementById('board')
-
-document.addEventListener('click', e => {
-    console.log('click on document')
+const board = document.getElementById('boardContainer')
+// dragable tokens
+document.addEventListener('mousedown', e => {
     if(e.target.className == 'token') {
-        var token = e.target
-        var delX = token.getBoundingClientRect().x - e.clientX
-        var delY = token.getBoundingClientRect().y - e.clientY
-        var follow = e => {
+        const token = e.target
+        const delX = token.getBoundingClientRect().x - e.clientX
+        const delY = token.getBoundingClientRect().y - e.clientY
+        const follow = e => {
             x = e.clientX;
             y = e.clientY;     
             token.style.left = x + delX + "px";
@@ -14,10 +13,24 @@ document.addEventListener('click', e => {
         }
 
         document.addEventListener('mousemove', follow, false);
-        board.addEventListener('click', e => {
-            console.log('hi')// not happening all the clicks are on the token that follow the mouse
+        document.addEventListener('mouseup', e => {
             document.removeEventListener('mousemove', follow)
         }) 
     }
 })
 
+// boardNodes generation
+for (let ring = 1; ring <= 3; ring++) {
+    for (let x = 0; x <= 2; x++) {
+        for (let y = 0; y <= 2; y++) {
+            if(x * y === 1) continue
+            const boardNode = document.createElement('div')
+            boardNode.className = 'boardNode'
+            boardNode.id = '' + ring + x + y
+            boardNode.style.gridColumnStart = 2 + ring * x + 3 - ring
+            boardNode.style.gridRowStart = 2 + ring * y + 3 - ring
+            board.appendChild(boardNode)
+            // could be optimized to add all children at once
+        }
+    }
+}
