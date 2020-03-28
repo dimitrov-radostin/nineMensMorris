@@ -20,7 +20,7 @@ class Token {
         this.inAMill = false
         this.flyble = false
         this.position = null
-        spawnToken(id)
+        spawnToken(id, player)
     }
     die(){
         this.dead
@@ -40,7 +40,7 @@ class Token {
                 tokens['player' + player].push(token)
                 create(++id)
             }
-        }, 300 * Math.random())
+        }, 250 * Math.random())
 })(0)
 
 
