@@ -3,6 +3,7 @@ const board = document.getElementById('boardContainer')
 
 // dragable tokens
 var draggedToken = null
+var closestNodeId = null
 var delX 
 var delY
 
@@ -16,6 +17,8 @@ const follow = e => {
     y = e.clientY;    
     draggedToken.style.left = x + delX + 'px';
     draggedToken.style.top = y + delY + 'px';
+    // find and color closest node
+    findAndColourClosestNode(x, y)
 }
 
 document.addEventListener('mousedown', e => {
@@ -29,19 +32,21 @@ document.addEventListener('mouseup', e => {
     if(draggedToken){
         console.log('dropped!!!!!')
         document.removeEventListener('mousemove', follow)
-        closestNodeId = findClosestNode(e.clientX, e.clientY)
-        console.log(closestNodeId)
+
+        findAndColourClosestNode(e.clientX, e.clientY)
         if (closestNodeId){
             placeTokenOnNode(draggedToken.id, closestNodeId)
             tokens.findById(draggedToken.id).place(closestNodeId)
         }
         draggedToken = null
+        closestNodeId = null
     }
 }) 
 
-function findClosestNode(x, y){
-    console.log(tokens.findById(draggedToken.id)
-    .getAvailableNodesForToken())
+function findAndColourClosestNode(x, y){
+    // changes a globl variable return 
+    // console.log(tokens.findById(draggedToken.id)
+    // .getAvailableNodesForToken())
     let {closestNode, minDistance} = tokens.findById(draggedToken.id)
         .getAvailableNodesForToken()
         .reduce(({ closestNode, minDistance }, node) => {
@@ -55,7 +60,22 @@ function findClosestNode(x, y){
             }
         }, { closestNode: null, minDistance: Infinity })
 
-    return minDistance < 200 ? closestNode.id : null
+    if(minDistance > 200){
+        decolourNode(closestNodeId)
+        closestNodeId = null
+        console.log("mn si dalech aj chao")
+        return false
+    }
+
+    if(closestNode.id != closestNodeId) {
+        console.log('opa toz tuka e po blizo ai chao')
+        if(closestNodeId) decolourNode(closestNodeId)
+
+        closestNodeId = closestNode.id
+        colourNode(closestNodeId)
+        return true
+    }
+    console.log('da ue brat vijdam go')
 }
 
 function placeTokenOnNode(tokenId, nodeId){
@@ -103,4 +123,15 @@ function spawnToken(id, player){
       }
       
       requestAnimationFrame(fall);
+}
+
+
+// colour node
+function colourNode(id) {
+    let node = document.getElementById(id)
+    node.style.backgroundColor = 'yellow'
+}
+function decolourNode(id) {
+    let node = document.getElementById(id)
+    node.style.backgroundColor = 'rgba(158, 21, 170, 0.377)'
 }

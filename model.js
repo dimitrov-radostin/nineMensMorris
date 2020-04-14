@@ -31,7 +31,7 @@ class Token {
         spawnToken(id, player)
     }
     die(){
-        this.dead
+        this.dead = true
     }
     place(position){
         let oldNode = boardNodes.findById(this.position)
@@ -50,8 +50,6 @@ class Token {
         }
     }
 }
-
-
 
 
 // Generating the tokens
